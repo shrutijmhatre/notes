@@ -97,5 +97,22 @@ namespace NotesApp.API.Controllers
 
         }
 
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public IActionResult DeleteNoteById(Guid id) 
+        {
+            var existingNote = dbContext.Notes.Find(id);
+
+            if(existingNote != null)
+            {
+                dbContext.Notes.Remove(existingNote);
+                dbContext.SaveChanges();
+
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
     }
 }
