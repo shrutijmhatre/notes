@@ -4,7 +4,7 @@ using Notes.API.Data;
 using Notes.API.Models.DomainModels;
 using Notes.API.Models.DTO;
 
-namespace Notes.API.Controllers
+namespace NotesApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -33,5 +33,50 @@ namespace Notes.API.Controllers
             return Ok(note);
 
         }
+
+        [HttpGet]
+        public IActionResult GetAllNotes()
+        {
+            var notes = dbContext.Notes.ToList();
+
+            var notesDTO = new List<Notes.API.Models.DTO.GetNote>();
+
+            foreach (var note in notes)
+            {
+                notesDTO.Add(new Notes.API.Models.DTO.GetNote
+                {
+                    Id = note.Id,
+                    Title = note.Title,
+                    Description = note.Description,
+                    DateCreated = note.DateCreated,
+                });
+
+            }
+
+            return Ok(notesDTO);
+        }
+
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public IActionResult GetNoteById(Guid id)
+        {
+            var noteDomainObject = dbContext.Notes.Find(id);
+
+            if (noteDomainObject != null)
+            {
+                var noteDTO = new Notes.API.Models.DTO.GetNote
+                {
+                    Id = noteDomainObject.Id,
+                    Title = noteDomainObject.Title,
+                    Description = noteDomainObject.Description,
+                    DateCreated = noteDomainObject.DateCreated,
+                };
+
+                return Ok(noteDTO);
+            }
+
+            return BadRequest();
+        }
+
     }
 }
