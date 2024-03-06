@@ -78,5 +78,24 @@ namespace NotesApp.API.Controllers
             return BadRequest();
         }
 
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public IActionResult UpdateNote(Guid id, UpdateNoteRequest updateNoteRequest) 
+        {
+            var existingNote = dbContext.Notes.Find(id);
+
+            if (existingNote != null) 
+            { 
+                existingNote.Title = updateNoteRequest.Title;
+                existingNote.Description = updateNoteRequest.Description;
+
+                dbContext.SaveChanges();
+                return Ok(existingNote);
+            }
+
+            return BadRequest();
+
+        }
+
     }
 }
